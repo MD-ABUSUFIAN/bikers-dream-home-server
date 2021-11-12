@@ -106,6 +106,18 @@ app.get('/manageProducts',async(req,res)=>{
 
 
 
+
+// Database to find Specific six data show home page
+
+app.get('/limitProduct',async(req,res)=>{
+    const result=await productCollection.find({}).limit(6).toArray();
+    res.json(result)
+    console.log(result)
+})
+
+
+
+
 //Admin Manage Product to Specific Product Delete Order
 
 app.delete('/adminDelete/:id',async(req,res)=>{
@@ -127,7 +139,12 @@ app.delete('/myOrder/:id',async(req,res)=>{
     res.json(result)
     console.log(result)
 
-})
+});
+
+
+
+
+
 
 
 
