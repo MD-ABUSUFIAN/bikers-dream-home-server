@@ -135,7 +135,7 @@ app.get('/manageOrders',async(req,res)=>{
 app.get('/limitProduct',async(req,res)=>{
     const result=await productCollection.find({}).limit(6).toArray();
     res.json(result)
-    console.log(result)
+ 
 });
 
 
@@ -162,7 +162,7 @@ app.put('/updateUser/admin',async(req,res)=>{
     const updateDoc = {$set:{role:"admin"} }
     const result=await usersCollection.updateOne(filter,updateDoc)
     res.json(result)
-    console.log(result)
+  
     
 })
 
@@ -179,22 +179,21 @@ app.put('/updateUser/admin',async(req,res)=>{
 
 app.delete('/adminDelete/:id',async(req,res)=>{
     const id=req.params.id;
-    console.log(id)
     const cursor={_id:ObjectId(id)}
     const result=await ordersCollection.deleteOne(cursor)
     res.json(result)
-    console.log(result)
+    
 })
 
 //Customer ManageProduct to specific Product Delete Method
 
 app.delete('/myOrder/:id',async(req,res)=>{
     const id=req.params.id;
-    console.log(id)
+    
     const cursor={_id:ObjectId(id)};
     const result=await ordersCollection.deleteOne(cursor)
     res.json(result)
-    console.log(result)
+    
 
 });
 
