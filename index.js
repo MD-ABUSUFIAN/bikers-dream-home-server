@@ -57,6 +57,7 @@ app.post('/singleOrder',async(req,res)=>{
 
 //new Users post method in this Database
 app.post('/newUser',async(req,res)=>{
+    console.log(req.body)
     const result=await usersCollection.insertOne(req.body);
     res.json(result);
    
@@ -144,7 +145,7 @@ app.get('/allUser/:email',async(req,res)=>{
 
     const email = req.params.email;
     const query ={email: email};
-    const user=await usersCollection.findOne(query);
+    const user=await usersCollection.findOne(query)
     let isAdmin =false;
     if(user.role==='admin'){
         isAdmin = true;
@@ -161,6 +162,7 @@ app.put('/updateUser/admin',async(req,res)=>{
     const updateDoc = {$set:{role:"admin"} }
     const result=await usersCollection.updateOne(filter,updateDoc)
     res.json(result)
+    console.log(result)
     
 })
 
@@ -266,5 +268,5 @@ app.get('/', (req, res) => {
 })
 
 app.listen(port,(req,res)=>{
-    console.log("listening thid port",port)
+    console.log("listening port",port)
 })
