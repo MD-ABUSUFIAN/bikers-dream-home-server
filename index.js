@@ -24,6 +24,7 @@ async function run(){
     const productCollection = database.collection("products");
     const reviewCollection = database.collection("customerReviews");
     const ordersCollection = database.collection("Orders");
+    const usersCollection = database.collection("NewUsers");
 
 
 
@@ -48,12 +49,29 @@ res.json(result);
 //Customer Purchase Product Order  Post Method
 
 app.post('/singleOrder',async(req,res)=>{
-    console.log(req.body);
     const result=await ordersCollection.insertOne(req.body);
     res.send(result)
-    console.log("review hits successfully",result)
+   
 })
 
+
+//new Users post method in this Database
+app.post('/newUser',async(req,res)=>{
+    const result=await usersCollection.insertOne(req.body);
+    res.json(result);
+   
+});
+
+//if new user than added user collection database or old user than update Database
+app.put('/newUser',async(req,res)=>{
+    const user=req.body;
+    const filter={email:user.email}
+    const options = { upsert: true };
+    const updateDoc={$set:{user}}
+    const result=await usersCollection.updateOne(filter,updateDoc,options)
+    res.json(result);
+    
+});
 
 
 
@@ -63,7 +81,6 @@ app.post('/singleOrder',async(req,res)=>{
 //All Products get Only client site GET Method
 
 app.get('/allProduct',async(req, res)=>{
-   
     const result=await productCollection.find({}).toArray();
     res.json(result);
 });
@@ -78,7 +95,6 @@ app.get('/allReview',async(req,res)=>{
 
 //All Order Single Product Get with id
 app.get('/singleProduct/:id',async(req,res)=>{
-    console.log("hit this link",req.params.id)
     const id=req.params.id;
     const cursor={_id:ObjectId(id)};
     const result=await productCollection.findOne(cursor)
@@ -89,7 +105,6 @@ app.get('/singleProduct/:id',async(req,res)=>{
 //Specific email to shows my Order get method
 app.get('/myOrder/:email',async(req, res)=>{
     const id=req.params.email;
-    
     const email={email:id};
     const result=await ordersCollection.find(email).toArray();
     res.json(result);
@@ -104,6 +119,13 @@ app.get('/manageProducts',async(req,res)=>{
     
 })
 
+// Admin dashBoard Manage all orders
+app.get('/manageOrders',async(req,res)=>{
+        const result=await ordersCollection.find({}).toArray()
+    res.json(result);
+    
+})
+
 
 
 
@@ -113,10 +135,43 @@ app.get('/limitProduct',async(req,res)=>{
     const result=await productCollection.find({}).limit(6).toArray();
     res.json(result)
     console.log(result)
+});
+
+
+//User and Admin Bassis DashBoard Shows to get methods to
+
+app.get('/allUser/:email',async(req,res)=>{
+
+    const email = req.params.email;
+    const query ={email: email};
+    const user=await usersCollection.findOne(query);
+    let isAdmin =false;
+    if(user.role==='admin'){
+        isAdmin = true;
+    }
+    res.json({admin:isAdmin});
+    
 })
 
 
 
+app.put('/updateUser/admin',async(req,res)=>{
+    const user=req.body;
+    const filter={email:user.email}
+    const updateDoc = {$set:{role:"admin"} }
+    const result=await usersCollection.updateOne(filter,updateDoc)
+    res.json(result)
+    
+})
+
+
+
+
+
+
+
+
+// All Delete Method Section
 
 //Admin Manage Product to Specific Product Delete Order
 
